@@ -17,7 +17,7 @@ defmodule ShipmentTrackingDashboard.Repo.Migrations.CreateStaffAndShipmentTables
     create table(:shipments, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :tracking_number, :string, null: false
-      add :status, :string, default: :created, null: false
+      add :status, :string, default: "created", null: false
       add :current_location, :string, null: false
       add :origin, :string, null: false
       add :destination, :string, null: false

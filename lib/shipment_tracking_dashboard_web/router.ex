@@ -21,6 +21,7 @@ defmodule ShipmentTrackingDashboardWeb.Router do
     live_session :default,
       layout: {ShipmentTrackingDashboardWeb.Layouts, :app} do
       live "/tracking", TrackingLive
+      live "/staff/login", StaffLoginLive
     end
   end
 

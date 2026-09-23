@@ -31,6 +31,8 @@ defmodule ShipmentTrackingDashboardWeb.Layouts do
     default: nil,
     doc: "the current [scope](https://phoenix.hexdocs.pm/scopes.html)"
 
+  attr :active_tab, :atom, required: true
+
   def app(assigns) do
     ~H"""
     <header class="bg-blue-900 text-white">
@@ -39,26 +41,25 @@ defmodule ShipmentTrackingDashboardWeb.Layouts do
           Shipment Tracking Dashboard
         </div>
         <div class="ml-auto flex">
-          <button
-            phx-click="switch_tab"
-            phx-value-tab="tracking"
+          <.link
+            navigate={~p"/tracking"}
             class={[
               "px-6 py-3 font-medium",
               @active_tab == :tracking && "border-2 border-blue-600 text-blue-600"
             ]}
           >
             Track Your Parcel
-          </button>
+          </.link>
 
-          <button
-            phx-click="switch_tab"
-            phx-value-tab="staff_login"
+          <.link
+            navigate={~p"/staff/login"}
             class={[
-              "px-6 py-3 font-medium"
+              "px-6 py-3 font-medium",
+              @active_tab == :staff_login && "border-2 border-blue-600 text-blue-600"
             ]}
           >
             Staff Login In
-          </button>
+          </.link>
         </div>
       </div>
     </header>
