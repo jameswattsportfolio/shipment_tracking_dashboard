@@ -89,7 +89,11 @@ defmodule ShipmentTrackingDashboard.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["compile", "tailwind shipment_tracking_dashboard", "esbuild shipment_tracking_dashboard"],
+      "assets.build": [
+        "compile",
+        "tailwind shipment_tracking_dashboard",
+        "esbuild shipment_tracking_dashboard"
+      ],
       "assets.deploy": [
         "tailwind shipment_tracking_dashboard --minify",
         "esbuild shipment_tracking_dashboard --minify",

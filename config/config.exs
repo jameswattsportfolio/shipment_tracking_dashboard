@@ -9,7 +9,7 @@ import Config
 
 config :shipment_tracking_dashboard,
   ecto_repos: [ShipmentTrackingDashboard.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime, binary_id: true]
 
 # Configure the endpoint
 config :shipment_tracking_dashboard, ShipmentTrackingDashboardWeb.Endpoint,

@@ -10,7 +10,8 @@ defmodule ShipmentTrackingDashboard.Application do
     children = [
       ShipmentTrackingDashboardWeb.Telemetry,
       ShipmentTrackingDashboard.Repo,
-      {DNSCluster, query: Application.get_env(:shipment_tracking_dashboard, :dns_cluster_query) || :ignore},
+      {DNSCluster,
+       query: Application.get_env(:shipment_tracking_dashboard, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: ShipmentTrackingDashboard.PubSub},
       # Start a worker by calling: ShipmentTrackingDashboard.Worker.start_link(arg)
       # {ShipmentTrackingDashboard.Worker, arg},

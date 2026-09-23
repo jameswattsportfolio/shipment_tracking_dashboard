@@ -31,44 +31,41 @@ defmodule ShipmentTrackingDashboardWeb.Layouts do
     default: nil,
     doc: "the current [scope](https://phoenix.hexdocs.pm/scopes.html)"
 
-  slot :inner_block, required: true
-
   def app(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
-      <div class="flex-1">
-        <a href="/" class="flex-1 flex w-fit items-center gap-2">
-          <img src={~p"/images/logo.svg"} width="36" />
-          <span class="text-sm font-semibold">v{Application.spec(:phoenix, :vsn)}</span>
-        </a>
-      </div>
-      <div class="flex-none">
-        <ul class="flex flex-column px-1 space-x-4 items-center">
-          <li>
-            <a href="https://phoenixframework.org/" class="btn btn-ghost">Website</a>
-          </li>
-          <li>
-            <a href="https://github.com/phoenixframework/phoenix" class="btn btn-ghost">GitHub</a>
-          </li>
-          <li>
-            <.theme_toggle />
-          </li>
-          <li>
-            <a href="https://phoenix.hexdocs.pm/overview.html" class="btn btn-primary">
-              Get Started <span aria-hidden="true">&rarr;</span>
-            </a>
-          </li>
-        </ul>
+    <header class="bg-blue-900 text-white">
+      <div class="flex border-b">
+        <div class="px-6 py-3 font-medium">
+          Shipment Tracking Dashboard
+        </div>
+        <div class="ml-auto flex">
+          <button
+            phx-click="switch_tab"
+            phx-value-tab="tracking"
+            class={[
+              "px-6 py-3 font-medium",
+              @active_tab == :tracking && "border-2 border-blue-600 text-blue-600"
+            ]}
+          >
+            Track Your Parcel
+          </button>
+
+          <button
+            phx-click="switch_tab"
+            phx-value-tab="staff_login"
+            class={[
+              "px-6 py-3 font-medium"
+            ]}
+          >
+            Staff Login In
+          </button>
+        </div>
       </div>
     </header>
 
-    <main class="px-4 py-20 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl space-y-4">
-        {render_slot(@inner_block)}
-      </div>
+    <main class="mx-auto max-w-7xl px-6 py-8">
+      {@inner_content}
     </main>
-
-    <.flash_group flash={@flash} />
     """
   end
 

@@ -1,5 +1,6 @@
 defmodule ShipmentTrackingDashboardWeb.Router do
   use ShipmentTrackingDashboardWeb, :router
+  import Phoenix.LiveView.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -17,7 +18,10 @@ defmodule ShipmentTrackingDashboardWeb.Router do
   scope "/", ShipmentTrackingDashboardWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live_session :default,
+      layout: {ShipmentTrackingDashboardWeb.Layouts, :app} do
+      live "/tracking", TrackingLive
+    end
   end
 
   # Other scopes may use custom stacks.
