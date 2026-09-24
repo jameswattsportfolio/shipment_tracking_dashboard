@@ -31,41 +31,33 @@ defmodule ShipmentTrackingDashboardWeb.Layouts do
     default: nil,
     doc: "the current [scope](https://phoenix.hexdocs.pm/scopes.html)"
 
-  attr :active_tab, :atom, required: true
+  slot :inner_block, required: true
 
   def app(assigns) do
     ~H"""
-    <header class="bg-blue-900 text-white">
-      <div class="flex border-b">
-        <div class="px-6 py-3 font-medium">
-          Shipment Tracking Dashboard
-        </div>
+    <header class="bg-white text-slate-800 border-b border-slate-200">
+      <div class="flex">
+        <div class="px-6 py-3 font-medium">Shipment Tracking Dashboard</div>
+
         <div class="ml-auto flex">
           <.link
             navigate={~p"/tracking"}
-            class={[
-              "px-6 py-3 font-medium",
-              @active_tab == :tracking && "border-2 border-blue-600 text-blue-600"
-            ]}
-          >
-            Track Your Parcel
-          </.link>
-
+            class="px-6 py-3 font-medium text-slate-800 hover:text-blue-600"
+          > Track Your Parcel </.link>
           <.link
-            navigate={~p"/staff/login"}
-            class={[
-              "px-6 py-3 font-medium",
-              @active_tab == :staff_login && "border-2 border-blue-600 text-blue-600"
-            ]}
-          >
-            Staff Login In
-          </.link>
+            navigate={~p"/users/log-in"}
+            class="px-6 py-3 font-medium text-slate-800 hover:text-blue-600"
+          > Staff Login </.link>
         </div>
       </div>
     </header>
 
     <main class="mx-auto max-w-7xl px-6 py-8">
-      {@inner_content}
+      <%= if assigns[:inner_block] do %>
+        {render_slot(@inner_block)}
+      <% else %>
+        {assigns[:inner_content]}
+      <% end %>
     </main>
     """
   end

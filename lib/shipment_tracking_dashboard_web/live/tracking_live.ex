@@ -3,11 +3,10 @@ defmodule ShipmentTrackingDashboardWeb.TrackingLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    IO.puts("TrackingLive.ex - live folder")
+    IO.inspect("TrackingLive.ex - live folder")
 
     {:ok,
      assign(socket,
-       active_tab: :tracking,
        tracking_number: "",
        shipment: nil,
        error: nil
