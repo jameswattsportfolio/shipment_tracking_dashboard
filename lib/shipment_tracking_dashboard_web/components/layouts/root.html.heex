@@ -44,25 +44,32 @@
 
   <body>
     <ul class="menu menu-horizontal w-full relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
+      <li class="mr-auto font-semibold">
+        Shipment Tracking Dashboard
+      </li>
       <%= if @current_scope do %>
         <li>
           {@current_scope.user.email}
         </li>
 
         <li>
-          <.link href={~p"/users/settings"}>Settings</.link>
+          <.link href={~p"/staff/dashboard"} class="hover:text-blue-600">Dashbaord</.link>
         </li>
 
         <li>
-          <.link href={~p"/users/log-out"} method="delete">Log out</.link>
+          <.link href={~p"/users/settings"} class="hover:text-blue-600">Settings</.link>
+        </li>
+
+        <li>
+          <.link href={~p"/users/log-out"} class="hover:text-blue-600" method="delete">Log out</.link>
         </li>
       <% else %>
         <li>
-          <.link href={~p"/users/register"}>Register</.link>
+          <.link href={~p"/tracking"} class="hover:text-blue-600">Track Your Shipment</.link>
         </li>
 
         <li>
-          <.link href={~p"/users/log-in"}>Log in</.link>
+          <.link href={~p"/users/log-in"} class="hover:text-blue-600">Staff Login</.link>
         </li>
       <% end %>
     </ul>

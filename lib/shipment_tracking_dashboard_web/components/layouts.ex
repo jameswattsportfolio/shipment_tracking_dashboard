@@ -35,23 +35,6 @@ defmodule ShipmentTrackingDashboardWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <header class="bg-white text-slate-800 border-b border-slate-200">
-      <div class="flex">
-        <div class="px-6 py-3 font-medium">Shipment Tracking Dashboard</div>
-
-        <div class="ml-auto flex">
-          <.link
-            navigate={~p"/tracking"}
-            class="px-6 py-3 font-medium text-slate-800 hover:text-blue-600"
-          > Track Your Parcel </.link>
-          <.link
-            navigate={~p"/users/log-in"}
-            class="px-6 py-3 font-medium text-slate-800 hover:text-blue-600"
-          > Staff Login </.link>
-        </div>
-      </div>
-    </header>
-
     <main class="mx-auto max-w-7xl px-6 py-8">
       <%= if assigns[:inner_block] do %>
         {render_slot(@inner_block)}

@@ -8,6 +8,7 @@ defmodule ShipmentTrackingDashboardWeb.UserLive.Login do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <div class="mx-auto max-w-sm space-y-4">
+        <!--
         <div class="text-center">
           <.header>
             <p>Log in</p>
@@ -34,7 +35,6 @@ defmodule ShipmentTrackingDashboardWeb.UserLive.Login do
             </p>
           </div>
         </div>
-
         <.form
           :let={f}
           for={@form}
@@ -56,9 +56,8 @@ defmodule ShipmentTrackingDashboardWeb.UserLive.Login do
             Log in with email <span aria-hidden="true">→</span>
           </.button>
         </.form>
-
         <div class="divider">or</div>
-
+        -->
         <.form
           :let={f}
           for={@form}
@@ -83,11 +82,13 @@ defmodule ShipmentTrackingDashboardWeb.UserLive.Login do
             autocomplete="current-password"
             spellcheck="false"
           />
+          <!--
           <.button class="btn btn-primary w-full" name={@form[:remember_me].name} value="true">
             Log in and stay logged in <span aria-hidden="true">→</span>
           </.button>
-          <.button class="btn btn-primary btn-soft w-full mt-2">
-            Log in only this time
+          -->
+          <.button class="btn btn-primary w-full mt-2">
+            Log in
           </.button>
         </.form>
       </div>

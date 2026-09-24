@@ -267,7 +267,7 @@ defmodule ShipmentTrackingDashboardWeb.UserAuth do
     ~p"/staff/dashboard"
   end
 
-  def signed_in_path(_), do: ~p"/"
+  def signed_in_path(_), do: ~p"/staff/dashboard"
 
   @doc """
   Plug for routes that require the user to be authenticated.
