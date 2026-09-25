@@ -6,45 +6,57 @@ defmodule ShipmentTrackingDashboardWeb.ShipmentFormLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    changeset =
-      Shipments.initialise_shipment(%Shipment{})
-      |> Map.from_struct()
-
-    {:ok,
-     socket
-     |> assign(:page_title, "New Shipment")
-     |> assign(:shipment, %Shipment{})
-     |> assign(:form, to_form(changeset))}
+    {:ok, socket}
   end
 
   @impl true
-  def handle_params(_params, _uri, socket) do
+  def handle_params(params, _uri, socket) do
     case socket.assigns.live_action do
       :new ->
-        {:noreply, assign(socket, page_title: "New Shipment")}
+        changeset = Shipments.initialise_shipment(%Shipment{})
+
+        {:noreply,
+         socket
+         |> assign(:page_title, "New Shipment")
+         |> assign(:shipment, %Shipment{})
+         |> assign(:form, to_form(changeset, as: :shipment))}
 
       :edit ->
-        {:noreply, assign(socket, page_title: "Edit Shipment")}
+        case Shipments.get_shipment(params["id"]) do
+          nil ->
+            {:noreply,
+             socket
+             |> put_flash(:error, "Shipment not found")
+             |> push_navigate(to: "/staff/dashboard")}
+
+          shipment ->
+            changeset = Shipments.change_shipment(shipment)
+
+            {:noreply,
+             socket
+             |> assign(:page_title, "Edit Shipment")
+             |> assign(:shipment, shipment)
+             |> assign(:form, to_form(changeset, as: :shipment))}
+        end
     end
   end
 
   @impl true
-  def handle_event("validate", params, socket) do
+  def handle_event("validate", %{"shipment" => shipment_params}, socket) do
     changeset =
       socket.assigns.shipment
-      |> Shipments.change_shipment(params)
+      |> Shipments.change_shipment(shipment_params)
       |> Map.put(:action, :validate)
 
-    IO.inspect(changeset)
-
-    {:noreply, assign(socket, :form, changeset)}
+    {:noreply, assign(socket, :form, to_form(changeset, as: :shipment))}
   end
 
   @impl true
-  def handle_event("save", shipment_params, socket) do
-    IO.inspect("shipment_params")
-    IO.inspect(shipment_params)
+  def handle_event("save", %{"shipment" => shipment_params}, socket) do
+    save_shipment(socket, socket.assigns.live_action, shipment_params)
+  end
 
+  defp save_shipment(socket, :new, shipment_params) do
     case Shipments.create_shipment(shipment_params) do
       {:ok, _shipment} ->
         {:noreply,
@@ -53,7 +65,20 @@ defmodule ShipmentTrackingDashboardWeb.ShipmentFormLive do
          |> push_navigate(to: "/staff/dashboard")}
 
       {:error, changeset} ->
-        {:noreply, assign(socket, :changeset, changeset)}
+        {:noreply, assign(socket, :form, to_form(changeset, as: :shipment))}
+    end
+  end
+
+  defp save_shipment(socket, :edit, shipment_params) do
+    case Shipments.update_shipment(socket.assigns.shipment, shipment_params) do
+      {:ok, _shipment} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Shipment updated successfully")
+         |> push_navigate(to: "/staff/dashboard")}
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, :form, to_form(changeset, as: :shipment))}
     end
   end
 
@@ -72,204 +97,143 @@ defmodule ShipmentTrackingDashboardWeb.ShipmentFormLive do
       </div>
 
       <div class="bg-white rounded-lg shadow p-8">
-        <.form
-          for={@form}
-          phx-submit="save"
-        >
+        <.form for={@form} phx-change="validate" phx-submit="save">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-2">
                 Tracking Number
               </label>
-
               <.input
+                field={@form[:tracking_number]}
                 type="text"
-                name={@form[:tracking_number].name}
-                value={@form[:tracking_number].value}
                 class="w-full rounded-md border border-slate-300 bg-white text-slate-900 px-3 py-2"
               />
-
-              <div
-                :for={error <- @form[:tracking_number].errors}
-                class="mt-1 text-sm text-red-600"
-              >
-                {elem(error, 0)}
-              </div>
             </div>
 
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-2">
                 Status
               </label>
-
               <select
                 name={@form[:status].name}
                 class="w-full rounded-md border border-slate-300 bg-white text-slate-900 px-3 py-2"
               >
                 <option value="">Select Status</option>
-                <option
-                  value="created"
-                  selected={@form[:status].value == "created"}
-                >
+                <option value="created" selected={to_string(@form[:status].value) == "created"}>
                   Created
                 </option>
-
+                <option value="collected" selected={to_string(@form[:status].value) == "collected"}>
+                  Collected
+                </option>
                 <option
                   value="out_for_delivery"
-                  selected={@form[:status].value == "out_for_delivery"}
+                  selected={to_string(@form[:status].value) == "out_for_delivery"}
                 >
                   Out For Delivery
                 </option>
-
-                <option
-                  value="delivered"
-                  selected={@form[:status].value == "delivered"}
-                >
+                <option value="delivered" selected={to_string(@form[:status].value) == "delivered"}>
                   Delivered
                 </option>
-
-                <option
-                  value="delayed"
-                  selected={@form[:status].value == "delayed"}
-                >
+                <option value="delayed" selected={to_string(@form[:status].value) == "delayed"}>
                   Delayed
                 </option>
-
-                <option
-                  value="cancelled"
-                  selected={@form[:status].value == "cancelled"}
-                >
+                <option value="cancelled" selected={to_string(@form[:status].value) == "cancelled"}>
                   Cancelled
                 </option>
               </select>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">
-                Current Location
-              </label>
-
+              <label class="block text-sm font-medium text-slate-700 mb-2">Current Location</label>
               <.input
+                field={@form[:current_location]}
                 type="text"
-                name={@form[:current_location].name}
-                value={@form[:current_location].value}
                 class="w-full rounded-md border border-slate-300 bg-white text-slate-900 px-3 py-2"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">
-                Origin
-              </label>
-
+              <label class="block text-sm font-medium text-slate-700 mb-2">Origin</label>
               <.input
+                field={@form[:origin]}
                 type="text"
-                name={@form[:origin].name}
-                value={@form[:origin].value}
                 class="w-full rounded-md border border-slate-300 bg-white text-slate-900 px-3 py-2"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">
-                Destination
-              </label>
-
+              <label class="block text-sm font-medium text-slate-700 mb-2">Destination</label>
               <.input
+                field={@form[:destination]}
                 type="text"
-                name={@form[:destination].name}
-                value={@form[:destination].value}
                 class="w-full rounded-md border border-slate-300 bg-white text-slate-900 px-3 py-2"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">
-                Service Level
-              </label>
-
+              <label class="block text-sm font-medium text-slate-700 mb-2">Service Level</label>
               <.input
+                field={@form[:service_level]}
                 type="text"
-                name={@form[:service_level].name}
-                value={@form[:service_level].value}
                 class="w-full rounded-md border border-slate-300 bg-white text-slate-900 px-3 py-2"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">
-                Total Weight (kg)
-              </label>
-
+              <label class="block text-sm font-medium text-slate-700 mb-2">Total Weight (kg)</label>
               <.input
+                field={@form[:total_weight]}
                 type="number"
                 step="0.01"
-                name={@form[:total_weight].name}
-                value={@form[:total_weight].value}
                 class="w-full rounded-md border border-slate-300 bg-white text-slate-900 px-3 py-2"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">
-                Package Count
-              </label>
-
+              <label class="block text-sm font-medium text-slate-700 mb-2">Package Count</label>
               <.input
+                field={@form[:package_count]}
                 type="number"
-                name={@form[:package_count].name}
-                value={@form[:package_count].value}
                 class="w-full rounded-md border border-slate-300 bg-white text-slate-900 px-3 py-2"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">
-                Expected Delivery Date
-              </label>
-
+              <label class="block text-sm font-medium text-slate-700 mb-2">Expected Delivery Date</label>
               <.input
+                field={@form[:expected_delivery_date]}
                 type="date"
-                name={@form[:expected_delivery_date].name}
-                value={@form[:expected_delivery_date].value}
                 class="w-full rounded-md border border-slate-300 bg-white text-slate-900 px-3 py-2"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">
-                Actual Delivery Date
-              </label>
-
+              <label class="block text-sm font-medium text-slate-700 mb-2">Actual Delivery Date</label>
               <.input
+                field={@form[:actual_delivery_date]}
                 type="date"
-                name={@form[:actual_delivery_date].name}
-                value={@form[:actual_delivery_date].value}
                 class="w-full rounded-md border border-slate-300 bg-white text-slate-900 px-3 py-2"
               />
             </div>
           </div>
 
           <div class="mt-6">
-            <label class="block text-sm font-medium text-slate-700 mb-2">
-              Shipment Notes
-            </label>
-
-            <textarea
-              name={@form[:shipment_notes].name}
+            <label class="block text-sm font-medium text-slate-700 mb-2">Shipment Notes</label>
+            <.input
+              field={@form[:shipment_notes]}
+              type="textarea"
               rows="4"
               class="w-full rounded-md border border-slate-300 bg-white text-slate-900 px-3 py-2"
-            ><%= @form[:shipment_notes].value %></textarea>
+            />
           </div>
 
           <div class="mt-8 flex justify-end gap-3">
             <.link
-              navigate="/staff"
+              navigate="/staff/dashboard"
               class="px-4 py-2 border border-slate-300 rounded-md text-slate-700 hover:bg-slate-100"
             >
               Cancel
             </.link>
-
             <button
               type="submit"
               class="px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"

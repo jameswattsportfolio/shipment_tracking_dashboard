@@ -28,4 +28,8 @@ defmodule ShipmentTrackingDashboard.Enquiries do
     |> Enquiry.status_changeset(attrs)
     |> Repo.update()
   end
+
+  def change_enquiry(%Enquiry{} = enquiry, attrs \\ %{}) do
+    Enquiry.create_changeset(enquiry, attrs)
+  end
 end

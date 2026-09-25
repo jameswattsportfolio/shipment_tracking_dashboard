@@ -51,7 +51,7 @@ defmodule ShipmentTrackingDashboardWeb.Router do
 
     live_session :default,
       layout: {ShipmentTrackingDashboardWeb.Layouts, :app} do
-      live "/tracking", TrackingLive
+      live "/tracking", TrackingLive, :index
     end
   end
 
@@ -84,6 +84,7 @@ defmodule ShipmentTrackingDashboardWeb.Router do
 
       live "/staff/dashboard", StaffDashboardLive
       live "/staff/shipments/new", ShipmentFormLive, :new
+      live "/staff/shipments/:id/edit", ShipmentFormLive, :edit
     end
 
     post "/users/update-password", UserSessionController, :update_password

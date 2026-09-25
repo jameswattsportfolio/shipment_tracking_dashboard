@@ -50,12 +50,19 @@ defmodule ShipmentTrackingDashboard.Shipments do
   def list_shipments(filters \\ %{}) do
     Shipment
     |> maybe_filter_by_status(filters["status"])
+    |> maybe_search_tracking_number(filters["q"])
     |> Repo.all()
   end
 
   defp maybe_filter_by_status(query, nil), do: query
   defp maybe_filter_by_status(query, ""), do: query
   defp maybe_filter_by_status(query, status), do: from(s in query, where: s.status == ^status)
+
+  defp maybe_search_tracking_number(query, nil), do: query
+  defp maybe_search_tracking_number(query, ""), do: query
+
+  defp maybe_search_tracking_number(query, q),
+    do: from(s in query, where: ilike(s.tracking_number, ^"%#{q}%"))
 
   def create_event(%Shipment{} = shipment, attrs) do
     %Event{}
