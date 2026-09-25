@@ -51,4 +51,50 @@ defmodule ShipmentTrackingDashboardWeb.ShipmentControllerTest do
       assert Enum.any?(data, &(&1["tracking_number"] == "TRK-DEMO-002"))
     end
   end
+
+  describe "POST /api/staff/shipments/:id/events (protected)" do
+    test "rejects an unauthenticated request", %{conn: conn} do
+      shipment = shipment_fixture()
+
+      conn =
+        post(conn, ~p"/api/staff/shipments/#{shipment.id}/events", %{
+          "event" => %{
+            "occurred_at" => DateTime.utc_now() |> DateTime.truncate(:second),
+            "location" => "Bristol Depot",
+            "status" => "collected",
+            "message" => "Shipment collected"
+          }
+        })
+
+      assert %{"error" => "unauthenticated"} = json_response(conn, 401)
+    end
+
+    test "allows staff to add an event without removing prior ones", %{conn: conn} do
+      user = user_fixture()
+      shipment = shipment_fixture()
+      event_fixture(%{"shipment_id" => shipment.id, "message" => "First event"})
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> post(~p"/api/staff/shipments/#{shipment.id}/events", %{
+          "event" => %{
+            "occurred_at" => DateTime.utc_now() |> DateTime.truncate(:second),
+            "location" => "Bristol Depot",
+            "status" => "out_for_delivery",
+            "message" => "Second event"
+          }
+        })
+
+      assert %{"data" => _} = json_response(conn, 201)
+
+      fetched_conn = get(build_conn(), ~p"/api/shipments/#{shipment.tracking_number}")
+      assert %{"data" => %{"events" => events}} = json_response(fetched_conn, 200)
+
+      messages = Enum.map(events, & &1["message"])
+      assert "First event" in messages
+      assert "Second event" in messages
+      assert length(events) == 2
+    end
+  end
 end

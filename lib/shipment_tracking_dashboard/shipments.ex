@@ -3,6 +3,7 @@ defmodule ShipmentTrackingDashboard.Shipments do
 
   alias ShipmentTrackingDashboard.Repo
   alias ShipmentTrackingDashboard.Shipments.Shipment
+  alias ShipmentTrackingDashboard.Shipments.Event
 
   def create_shipment(attrs \\ %{}) do
     Shipment.create_shipment(%Shipment{}, attrs)
@@ -30,10 +31,6 @@ defmodule ShipmentTrackingDashboard.Shipments do
     Repo.get!(Shipment, id)
   end
 
-  def list_shipments do
-    Repo.all(Shipment)
-  end
-
   def get_shipment_by_tracking_number(tracking_number) do
     Shipment
     |> Repo.get_by(tracking_number: tracking_number)
@@ -59,8 +56,6 @@ defmodule ShipmentTrackingDashboard.Shipments do
   defp maybe_filter_by_status(query, nil), do: query
   defp maybe_filter_by_status(query, ""), do: query
   defp maybe_filter_by_status(query, status), do: from(s in query, where: s.status == ^status)
-
-  alias ShipmentTrackingDashboard.Shipments.Event
 
   def create_event(%Shipment{} = shipment, attrs) do
     %Event{}
