@@ -28,6 +28,7 @@ defmodule ShipmentTrackingDashboard.Shipments.Shipment do
     field :expected_delivery_date, :date
     field :actual_delivery_date, :date
     field :shipment_notes, :string
+    has_many :events, ShipmentTrackingDashboard.Shipments.Event
 
     timestamps(type: :utc_datetime)
   end

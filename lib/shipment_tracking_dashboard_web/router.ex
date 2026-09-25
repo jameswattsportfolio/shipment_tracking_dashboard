@@ -16,6 +16,34 @@ defmodule ShipmentTrackingDashboardWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
+    plug :fetch_current_scope_for_user
+  end
+
+  pipeline :api_authenticated do
+    plug :require_authenticated_api_user
+  end
+
+  scope "/api", ShipmentTrackingDashboardWeb.Api do
+    pipe_through :api
+
+    post "/auth/login", SessionController, :create
+    delete "/auth/logout", SessionController, :delete
+
+    get "/shipments/:tracking_number", ShipmentController, :show
+    post "/enquiries", EnquiryController, :create
+  end
+
+  scope "/api/staff", ShipmentTrackingDashboardWeb.Api do
+    pipe_through [:api, :api_authenticated]
+
+    get "/shipments", ShipmentController, :index
+    post "/shipments", ShipmentController, :create
+    patch "/shipments/:id", ShipmentController, :update
+    post "/shipments/:id/events", ShipmentController, :add_event
+
+    get "/enquiries", EnquiryController, :index
+    patch "/enquiries/:id", EnquiryController, :update
   end
 
   scope "/", ShipmentTrackingDashboardWeb do
@@ -26,11 +54,6 @@ defmodule ShipmentTrackingDashboardWeb.Router do
       live "/tracking", TrackingLive
     end
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", ShipmentTrackingDashboardWeb do
-  #   pipe_through :api
-  # end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:shipment_tracking_dashboard, :dev_routes) do

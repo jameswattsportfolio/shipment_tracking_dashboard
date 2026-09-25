@@ -41,6 +41,25 @@ defmodule ShipmentTrackingDashboardWeb.UserAuth do
     |> redirect(to: user_return_to || signed_in_path(conn))
   end
 
+  # Same as log_in_user/3, but for JSON API responses — skips the
+  # browser-oriented redirect so the controller can send JSON instead.
+  def log_in_user_api(conn, user, params \\ %{}) do
+    conn
+    |> create_or_extend_session(user, params)
+    |> delete_session(:user_return_to)
+  end
+
+  def require_authenticated_api_user(conn, _opts) do
+    if conn.assigns[:current_scope] && conn.assigns.current_scope.user do
+      conn
+    else
+      conn
+      |> put_status(:unauthorized)
+      |> Phoenix.Controller.json(%{error: "unauthenticated"})
+      |> halt()
+    end
+  end
+
   @doc """
   Logs the user out.
 
@@ -58,6 +77,21 @@ defmodule ShipmentTrackingDashboardWeb.UserAuth do
     |> renew_session(nil)
     |> delete_resp_cookie(@remember_me_cookie, @remember_me_options)
     |> redirect(to: ~p"/tracking")
+  end
+
+  # Same as log_out_user/1, but for JSON API responses — skips the
+  # browser-oriented redirect so the controller can send JSON instead.
+  def log_out_user_api(conn) do
+    user_token = get_session(conn, :user_token)
+    user_token && Accounts.delete_user_session_token(user_token)
+
+    if live_socket_id = get_session(conn, :live_socket_id) do
+      ShipmentTrackingDashboardWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
+    end
+
+    conn
+    |> renew_session(nil)
+    |> delete_resp_cookie(@remember_me_cookie, @remember_me_options)
   end
 
   @doc """
