@@ -125,8 +125,6 @@ defmodule ShipmentTrackingDashboard.Accounts.User do
         password
       )
       when is_binary(hashed_password) and byte_size(password) > 0 do
-    IO.inspect(password)
-    IO.inspect(Pbkdf2.verify_pass(password, hashed_password))
     Pbkdf2.verify_pass(password, hashed_password)
   end
 

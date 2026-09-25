@@ -28,8 +28,6 @@ defmodule ShipmentTrackingDashboard.Accounts do
 
   def authenticate_user(email, password) do
     user = get_user_by_email(email)
-    IO.inspect("user: ")
-    IO.inspect(user)
 
     if user && User.valid_password?(user, password) do
       {:ok, user}

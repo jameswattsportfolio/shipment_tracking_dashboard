@@ -78,10 +78,6 @@ defmodule ShipmentTrackingDashboard.Shipments.Shipment do
   def create_shipment(shipment, attrs \\ %{}) do
     shipment
     |> changeset(attrs)
-    |> IO.inspect()
-
-    shipment
-    |> changeset(attrs)
     |> Repo.insert()
   end
 end
