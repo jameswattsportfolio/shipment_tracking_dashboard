@@ -1,4 +1,4 @@
-defmodule ShipmentTrackingDashboardWeb.PageController do
+defmodule ShipmentTrackingDashboardWeb.Api.PageController do
   use ShipmentTrackingDashboardWeb, :controller
 
   def home(conn, _params) do

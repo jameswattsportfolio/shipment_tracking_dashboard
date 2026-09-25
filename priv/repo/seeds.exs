@@ -7,9 +7,10 @@ staff_email = "staff@demo.com"
 staff_password = "demopassword123!"
 
 unless Accounts.get_user_by_email(staff_email) do
-  {:ok, _staff} =
-    Accounts.register_user(%{
-      email: staff_email,
+  {:ok, staff} = Accounts.register_user(%{email: staff_email})
+
+  {:ok, {_user, _expired_tokens}} =
+    Accounts.update_user_password(staff, %{
       password: staff_password,
       password_confirmation: staff_password
     })

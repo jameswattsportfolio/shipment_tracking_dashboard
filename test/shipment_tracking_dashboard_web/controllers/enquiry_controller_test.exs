@@ -1,4 +1,4 @@
-defmodule ShipmentTrackingDashboardWeb.Api.EnquiryControllerTest do
+defmodule ShipmentTrackingDashboardWeb.EnquiryControllerTest do
   use ShipmentTrackingDashboardWeb.ConnCase, async: true
 
   import ShipmentTrackingDashboard.EnquiriesFixtures

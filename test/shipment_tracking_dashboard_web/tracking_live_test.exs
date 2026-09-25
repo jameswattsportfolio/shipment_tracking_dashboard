@@ -62,11 +62,11 @@ defmodule ShipmentTrackingDashboardWeb.TrackingLiveTest do
 
       {:ok, view, _html} = live(conn, ~p"/tracking")
 
-      {:ok, _view, _html} =
-        view
-        |> element("form[phx-submit='search']")
-        |> render_submit(%{"tracking" => %{"tracking_number" => "TRK-DEMO-002"}})
-        |> follow_redirect(conn, ~p"/tracking?tracking_number=TRK-DEMO-002")
+      view
+      |> element("form[phx-submit='search']")
+      |> render_submit(%{"tracking" => %{"tracking_number" => "TRK-DEMO-002"}})
+
+      assert_patch(view, ~p"/tracking?tracking_number=TRK-DEMO-002")
     end
   end
 end

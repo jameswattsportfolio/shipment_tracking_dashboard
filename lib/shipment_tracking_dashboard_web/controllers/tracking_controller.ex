@@ -1,4 +1,4 @@
-defmodule ShipmentTrackingDashboardWeb.TrackingController do
+defmodule ShipmentTrackingDashboardWeb.Api.TrackingController do
   use ShipmentTrackingDashboardWeb, :controller
 
   def tracking(conn, _params) do

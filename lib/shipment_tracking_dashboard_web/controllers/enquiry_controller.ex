@@ -1,9 +1,9 @@
-defmodule ShipmentTrackingDashboardWeb.EnquiryController do
+defmodule ShipmentTrackingDashboardWeb.Api.EnquiryController do
   use ShipmentTrackingDashboardWeb, :controller
 
   alias ShipmentTrackingDashboard.Enquiries
 
-  # action_fallback ShipmentTrackingDashboardWeb.Api.FallbackController
+  action_fallback ShipmentTrackingDashboardWeb.FallbackController
 
   # POST /api/enquiries  (public)
   def create(conn, %{"enquiry" => enquiry_params}) do

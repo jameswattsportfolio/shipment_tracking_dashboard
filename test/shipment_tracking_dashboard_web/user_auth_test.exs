@@ -88,13 +88,13 @@ defmodule ShipmentTrackingDashboardWeb.UserAuthTest do
       assert max_age == @remember_me_cookie_max_age
     end
 
-    test "redirects to settings when user is already logged in", %{conn: conn, user: user} do
+    test "redirects to dashboard when user is already logged in", %{conn: conn, user: user} do
       conn =
         conn
         |> assign(:current_scope, Scope.for_user(user))
         |> UserAuth.log_in_user(user)
 
-      assert redirected_to(conn) == ~p"/users/settings"
+      assert redirected_to(conn) == ~p"/staff/dashboard"
     end
 
     test "writes a cookie if remember_me was set in previous session", %{conn: conn, user: user} do
@@ -137,7 +137,7 @@ defmodule ShipmentTrackingDashboardWeb.UserAuthTest do
       refute get_session(conn, :user_token)
       refute conn.cookies[@remember_me_cookie]
       assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
-      assert redirected_to(conn) == ~p"/staff/dashboard"
+      assert redirected_to(conn) == ~p"/tracking"
       refute Accounts.get_user_by_session_token(user_token)
     end
 
@@ -156,7 +156,7 @@ defmodule ShipmentTrackingDashboardWeb.UserAuthTest do
       conn = conn |> fetch_cookies() |> UserAuth.log_out_user()
       refute get_session(conn, :user_token)
       assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
-      assert redirected_to(conn) == ~p"/staff/dashboard"
+      assert redirected_to(conn) == ~p"/tracking"
     end
   end
 
