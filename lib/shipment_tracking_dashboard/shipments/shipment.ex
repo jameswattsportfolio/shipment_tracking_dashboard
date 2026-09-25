@@ -1,16 +1,16 @@
-defmodule ShipmentTracker.Shipping.Shipment do
+defmodule ShipmentTrackingDashboard.Shipments.Shipment do
   use Ecto.Schema
-
+  import Ecto.Query, warn: false
   import Ecto.Changeset
+  alias ShipmentTrackingDashboard.Repo
 
   @statuses [
     :created,
     :collected,
-    :in_transit,
     :out_for_delivery,
     :delivered,
     :delayed,
-    :exception
+    :cancelled
   ]
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -55,5 +55,32 @@ defmodule ShipmentTracker.Shipping.Shipment do
       :destination
     ])
     |> unique_constraint(:tracking_number)
+  end
+
+  def unvalidated_changeset(shipment, attrs) do
+    shipment
+    |> cast(attrs, [
+      :tracking_number,
+      :status,
+      :current_location,
+      :origin,
+      :destination,
+      :service_level,
+      :total_weight,
+      :package_count,
+      :expected_delivery_date,
+      :actual_delivery_date,
+      :shipment_notes
+    ])
+  end
+
+  def create_shipment(shipment, attrs \\ %{}) do
+    shipment
+    |> changeset(attrs)
+    |> IO.inspect()
+
+    shipment
+    |> changeset(attrs)
+    |> Repo.insert()
   end
 end
