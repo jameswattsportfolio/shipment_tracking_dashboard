@@ -52,6 +52,13 @@ defmodule ShipmentTrackingDashboard.Shipments do
     |> maybe_filter_by_status(filters["status"])
     |> maybe_search_tracking_number(filters["q"])
     |> Repo.all()
+    # Preloaded because the JSON API's shipment_json/1 always serializes
+    # events for every shipment returned here — without this, GET
+    # /api/staff/shipments would crash on the unloaded association.
+    # The staff dashboard LiveView doesn't currently display events in
+    # this list view, so this is some extra querying for that one caller,
+    # but it's required for the API contract to work correctly.
+    |> Repo.preload(events: from(e in Event, order_by: [asc: e.occurred_at]))
   end
 
   defp maybe_filter_by_status(query, nil), do: query

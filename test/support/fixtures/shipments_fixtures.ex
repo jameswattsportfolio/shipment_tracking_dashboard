@@ -3,6 +3,7 @@ defmodule ShipmentTrackingDashboard.ShipmentsFixtures do
 
   def shipment_fixture(attrs \\ %{}) do
     unique_suffix = System.unique_integer([:positive])
+    attrs = stringify_keys(attrs)
 
     {:ok, shipment} =
       attrs
@@ -31,6 +32,7 @@ defmodule ShipmentTrackingDashboard.ShipmentsFixtures do
   end
 
   def event_fixture(attrs) do
+    attrs = stringify_keys(attrs)
     shipment_id = attrs["shipment_id"] || shipment_fixture().id
 
     {:ok, event} =
@@ -48,5 +50,9 @@ defmodule ShipmentTrackingDashboard.ShipmentsFixtures do
       end)
 
     event
+  end
+
+  defp stringify_keys(attrs) do
+    Map.new(attrs, fn {k, v} -> {to_string(k), v} end)
   end
 end

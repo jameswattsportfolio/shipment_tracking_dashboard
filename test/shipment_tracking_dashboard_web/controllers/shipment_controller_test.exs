@@ -12,7 +12,7 @@ defmodule ShipmentTrackingDashboardWeb.ShipmentControllerTest do
 
       assert %{"data" => data} = json_response(conn, 200)
       assert data["tracking_number"] == "TRK-DEMO-001"
-      assert data["status"] == shipment.status
+      assert data["status"] == to_string(shipment.status)
     end
 
     test "returns 404 for an unknown tracking number", %{conn: conn} do
@@ -22,12 +22,12 @@ defmodule ShipmentTrackingDashboardWeb.ShipmentControllerTest do
     end
 
     test "does not leak internal notes in the public response", %{conn: conn} do
-      shipment = shipment_fixture(%{internal_notes: "flagged for fraud review"})
+      shipment = shipment_fixture(%{shipment_notes: "flagged for fraud review"})
 
       conn = get(conn, ~p"/api/shipments/#{shipment.tracking_number}")
 
       assert %{"data" => data} = json_response(conn, 200)
-      refute Map.has_key?(data, "internal_notes")
+      refute Map.has_key?(data, "shipment_notes")
     end
   end
 
