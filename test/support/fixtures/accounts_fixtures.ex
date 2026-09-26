@@ -1,9 +1,4 @@
 defmodule ShipmentTrackingDashboard.AccountsFixtures do
-  @moduledoc """
-  This module defines test helpers for creating
-  entities via the `ShipmentTrackingDashboard.Accounts` context.
-  """
-
   import Ecto.Query
 
   alias ShipmentTrackingDashboard.Accounts

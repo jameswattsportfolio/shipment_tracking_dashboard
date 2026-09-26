@@ -27,20 +27,11 @@ defmodule ShipmentTrackingDashboardWeb.Router do
   scope "/api", ShipmentTrackingDashboardWeb.Api do
     pipe_through :api
 
-    post "/auth/login", SessionController, :create
-    delete "/auth/logout", SessionController, :delete
-
-    get "/shipments/:tracking_number", ShipmentController, :show
     post "/enquiries", EnquiryController, :create
   end
 
   scope "/api/staff", ShipmentTrackingDashboardWeb.Api do
     pipe_through [:api, :api_authenticated]
-
-    get "/shipments", ShipmentController, :index
-    post "/shipments", ShipmentController, :create
-    patch "/shipments/:id", ShipmentController, :update
-    post "/shipments/:id/events", ShipmentController, :add_event
 
     get "/enquiries", EnquiryController, :index
     patch "/enquiries/:id", EnquiryController, :update
@@ -85,6 +76,7 @@ defmodule ShipmentTrackingDashboardWeb.Router do
       live "/staff/dashboard", StaffDashboardLive
       live "/staff/shipments/new", ShipmentFormLive, :new
       live "/staff/shipments/:id/edit", ShipmentFormLive, :edit
+      live "/staff/enquiries", StaffEnquiriesLive
     end
 
     post "/users/update-password", UserSessionController, :update_password

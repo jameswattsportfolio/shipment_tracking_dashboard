@@ -1,17 +1,6 @@
 defmodule ShipmentTrackingDashboard.ShipmentsFixtures do
-  @moduledoc """
-  This module defines test helpers for creating entities via the
-  `ShipmentTrackingDashboard.Shipments` context.
-  """
-
   alias ShipmentTrackingDashboard.Shipments
 
-  @doc """
-  Generate a shipment.
-
-  Accepts an attrs map to override any default — most commonly
-  `tracking_number` and `status` in tests that need a specific value.
-  """
   def shipment_fixture(attrs \\ %{}) do
     unique_suffix = System.unique_integer([:positive])
 
@@ -32,12 +21,6 @@ defmodule ShipmentTrackingDashboard.ShipmentsFixtures do
     shipment
   end
 
-  @doc """
-  Generate a shipment event, attached to a shipment.
-
-  Pass `shipment_id` via attrs, or a `:shipment` struct — if neither is
-  given, a new shipment is created for you.
-  """
   def event_fixture(attrs \\ %{})
 
   def event_fixture(%{shipment: shipment} = attrs) do

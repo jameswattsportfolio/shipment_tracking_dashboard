@@ -18,9 +18,6 @@ defmodule ShipmentTrackingDashboard.Accounts.UserNotifier do
     end
   end
 
-  @doc """
-  Deliver instructions to update a user email.
-  """
   def deliver_update_email_instructions(user, url) do
     deliver(user.email, "Update email instructions", """
 
@@ -38,9 +35,6 @@ defmodule ShipmentTrackingDashboard.Accounts.UserNotifier do
     """)
   end
 
-  @doc """
-  Deliver instructions to log in with a magic link.
-  """
   def deliver_login_instructions(user, url) do
     case user do
       %User{confirmed_at: nil} -> deliver_confirmation_instructions(user, url)

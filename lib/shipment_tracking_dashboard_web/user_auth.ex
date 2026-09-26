@@ -143,6 +143,7 @@ defmodule ShipmentTrackingDashboardWeb.UserAuth do
   # When the session is created, rather than extended, the renew_session
   # function will clear the session to avoid fixation attacks. See the
   # renew_session function to customize this behaviour.
+
   defp create_or_extend_session(conn, user, params) do
     token = Accounts.generate_user_session_token(user)
     remember_me = get_session(conn, :user_remember_me)
@@ -163,18 +164,8 @@ defmodule ShipmentTrackingDashboardWeb.UserAuth do
   # session to avoid fixation attacks. If there is any data
   # in the session you may want to preserve after log in/log out,
   # you must explicitly fetch the session data before clearing
-  # and then immediately set it after clearing, for example:
-  #
-  #     defp renew_session(conn, _user) do
-  #       delete_csrf_token()
-  #       preferred_locale = get_session(conn, :preferred_locale)
-  #
-  #       conn
-  #       |> configure_session(renew: true)
-  #       |> clear_session()
-  #       |> put_session(:preferred_locale, preferred_locale)
-  #     end
-  #
+  # and then immediately set it after clearing
+
   defp renew_session(conn, _user) do
     delete_csrf_token()
 
