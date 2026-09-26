@@ -63,6 +63,10 @@
         <li>
           <.link href={~p"/users/settings"} class="hover:text-blue-600">Settings</.link>
         </li>
+
+        <li>
+          <.link href={~p"/users/log-out"} class="hover:text-blue-600" method="delete">Log out</.link>
+        </li>
       <% else %>
         <li>
           <.link href={~p"/tracking"} class="hover:text-blue-600">Track Your Shipment</.link>

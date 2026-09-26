@@ -35,6 +35,7 @@ defmodule ShipmentTrackingDashboardWeb.Layouts do
 
   def app(assigns) do
     ~H"""
+    <.flash_group flash={@flash} />
     <main class="mx-auto max-w-7xl px-6 py-8">
       <%= if assigns[:inner_block] do %>
         {render_slot(@inner_block)}
