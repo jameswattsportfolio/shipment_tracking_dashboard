@@ -229,6 +229,5 @@ if Enquiries.list_enquiries() == [] do
     })
 
   Enquiries.update_enquiry_status(resolved, %{"status" => "resolved"})
+  IO.puts("Seed data created: 5 demo shipments (TRK-DEMO-001 to 005), 2 demo enquiries")
 end
-
-IO.puts("Seed data created: 5 demo shipments (TRK-DEMO-001 to 005), 2 demo enquiries")
