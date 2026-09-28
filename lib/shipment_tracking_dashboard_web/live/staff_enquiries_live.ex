@@ -77,7 +77,7 @@ defmodule ShipmentTrackingDashboardWeb.StaffEnquiriesLive do
         <select
           id="status"
           name="status"
-          class="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          class="rounded-md border border-slate-300 px-3 py-2 text-sm bg-slate-100 text-slate-900"
         >
           <option value="" selected={@filters["status"] == ""}>All enquiries</option>
           
