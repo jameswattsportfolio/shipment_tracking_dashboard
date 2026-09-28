@@ -16,22 +16,25 @@ unless Accounts.get_user_by_email(staff_email) do
     })
 end
 
-IO.puts("Seeded staff login -> #{staff_email} / #{staff_password}")
-
 # --- Helper to create a shipment with a full event timeline ------------
 create_shipment_with_events = fn shipment_attrs, events ->
-  {:ok, shipment} = Shipments.create_shipment(shipment_attrs)
+  case Shipments.get_shipment_by_tracking_number(shipment_attrs["tracking_number"]) do
+    nil ->
+      {:ok, shipment} = Shipments.create_shipment(shipment_attrs)
 
-  Enum.each(events, fn event_attrs ->
-    {:ok, _event} = Shipments.create_event(shipment, event_attrs)
-  end)
+      Enum.each(events, fn event_attrs ->
+        {:ok, _event} = Shipments.create_event(shipment, event_attrs)
+      end)
 
-  shipment
+      shipment
+
+    existing ->
+      existing
+  end
 end
 
 now = DateTime.utc_now() |> DateTime.truncate(:second)
 days_ago = fn n -> DateTime.add(now, -n * 86_400, :second) end
-days_from_now = fn n -> DateTime.add(now, n * 86_400, :second) end
 
 # TRK-DEMO-001 — Normal shipment in transit, several events
 create_shipment_with_events.(
@@ -210,19 +213,21 @@ create_shipment_with_events.(
   ]
 )
 
-# --- A few seeded enquiries, spanning open/resolved --------------------
-Enquiries.create_enquiry(%{
-  "tracking_number" => "TRK-DEMO-003",
-  "category" => "general",
-  "message" => "Why has my shipment been delayed? I was expecting it tomorrow."
-})
-
-{:ok, resolved} =
+if Enquiries.list_enquiries() == [] do
+  # --- A few seeded enquiries, spanning open/resolved --------------------
   Enquiries.create_enquiry(%{
-    "tracking_number" => "TRK-DEMO-002",
+    "tracking_number" => "TRK-DEMO-003",
     "category" => "general",
-    "message" => "Can you confirm this was delivered? I didn't get a notification."
+    "message" => "Why has my shipment been delayed? I was expecting it tomorrow."
   })
+
+  {:ok, resolved} =
+    Enquiries.create_enquiry(%{
+      "tracking_number" => "TRK-DEMO-002",
+      "category" => "general",
+      "message" => "Can you confirm this was delivered? I didn't get a notification."
+    })
+end
 
 Enquiries.update_enquiry_status(resolved, %{"status" => "resolved"})
 
