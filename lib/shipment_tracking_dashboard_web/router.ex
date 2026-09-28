@@ -51,6 +51,7 @@ defmodule ShipmentTrackingDashboardWeb.Router do
 
     live_session :default,
       layout: {ShipmentTrackingDashboardWeb.Layouts, :app} do
+      get "/", PageController, :home
       live "/tracking", TrackingLive, :index
     end
   end
