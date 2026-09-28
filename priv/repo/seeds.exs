@@ -227,8 +227,8 @@ if Enquiries.list_enquiries() == [] do
       "category" => "general",
       "message" => "Can you confirm this was delivered? I didn't get a notification."
     })
-end
 
-Enquiries.update_enquiry_status(resolved, %{"status" => "resolved"})
+  Enquiries.update_enquiry_status(resolved, %{"status" => "resolved"})
+end
 
 IO.puts("Seed data created: 5 demo shipments (TRK-DEMO-001 to 005), 2 demo enquiries")
