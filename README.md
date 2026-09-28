@@ -12,7 +12,7 @@ All data is fictional and seeded for demonstration.
 | Customer tracking | https://shipment-tracking-dashboard.onrender.com/tracking |
 | Staff login | https://shipment-tracking-dashboard.onrender.com/users/log-in |
 | Repository | https://github.com/jameswattsportfolio/shipment_tracking_dashboard |
-| Walkthrough | `<WALKTHROUGH_URL>` |
+| Walkthrough | https://youtu.be/0xjOF9Wym9E |
 
 > **First load may be slow.** Render's free tier may spin the service down after inactivity, so the first request can take around a minute.
 
